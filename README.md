@@ -1,5 +1,12 @@
 
 # Self organizing maps - Kohonen neural network
+## First steps
+```
+$ python -m venv venv
+$ ./venv/Scripts/activate.bat
+$ pip install -r requirements.txt
+$ python main.py
+```
 ## TSP
 Example results:
 - USA 600 cities
