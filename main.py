@@ -2,11 +2,11 @@ import numpy as np
 
 from SOM import SOM
 
-DATA_PATH = "data/Poland.csv" 
+DATA_PATH = "data/Brazil.csv" 
 
 def loadData(path: str) ->np.ndarray:
     # Read data from CSV
-    data = np.loadtxt(path, delimiter=',')
+    data = np.loadtxt(path, delimiter=',', encoding="utf8")
     index = data[:,0]
     x_coordinates = data[:,1]
     y_coordinates = data[:,2]
@@ -16,7 +16,7 @@ def loadData(path: str) ->np.ndarray:
 
 def main():
     cities = loadData(DATA_PATH)
-    network = SOM(cities, len(cities) * 8, 0.9997,10000)
+    network = SOM(cities, len(cities) * 8, 0.9997, 30000)
     network.train(report=True)
 
 

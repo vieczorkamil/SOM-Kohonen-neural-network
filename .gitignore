@@ -2,3 +2,4 @@ venv
 plots
 sandbox
 report
+__pycache__
