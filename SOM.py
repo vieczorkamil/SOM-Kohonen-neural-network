@@ -103,7 +103,7 @@ class SOM:
 
 
     def _printReport(self) -> None:
-        print() #TODO: 
+        ''' A good place to add some functionality in the future '''
         print("Done !!!")
     
 
@@ -117,8 +117,7 @@ class SOM:
         maxY = max(self.CITIES[:,1])
 
         # Setup the bounding box for the zoom and bounds of the map
-        bBSox = [minX-zoomScale,maxX+zoomScale,\
-                minY-zoomScale,maxY+zoomScale]
+        bBSox = [minX-zoomScale,maxX+zoomScale, minY-zoomScale,maxY+zoomScale]
 
         # plt.figure(figsize=(12,12))
         # Define the projection, scale, the corners of the map, and the resolution.
