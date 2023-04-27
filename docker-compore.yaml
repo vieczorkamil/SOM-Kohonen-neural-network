@@ -2,8 +2,8 @@ version: "3.9"
 
 services:
   api:
-    container_name: KohonenTSP
-    image: KohonenTSP
+    container_name: kohonen-tsp
+    image: kohonen-tsp
     build: 
       context: ./src
     volumes:
