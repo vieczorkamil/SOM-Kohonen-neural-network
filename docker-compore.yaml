@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: KohonenTSP
+    image: KohonenTSP
+    build: 
+      context: ./src
+    volumes:
+      - './src:/src' #synchronizacja 
+    ports:
+      - 5000:5000
