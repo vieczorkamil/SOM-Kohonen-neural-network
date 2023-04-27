@@ -1,12 +1,12 @@
 import numpy as np
 from SOM import SOM
 
-DATA_PATH = "data/Usa.csv" 
+DATA_PATH = "data/Usa.csv"
 
-def loadData(path: str) ->np.ndarray:
+
+def loadData(path: str) -> np.ndarray:
     # Read data from CSV
     data = np.loadtxt(path, delimiter=',', encoding="utf8")
-    index = data[:,0]
     x_coordinates = data[:,1]
     y_coordinates = data[:,2]
 
