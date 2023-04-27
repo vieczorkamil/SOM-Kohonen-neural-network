@@ -9,6 +9,7 @@ import re
 
 
 class SOM:
+    
     POINTS = None
     NN     = None
     CITIES = None
@@ -19,9 +20,11 @@ class SOM:
         self.n = nnSize
         self.learningRate = learningRate
         self.epochs = epochs
+        self.progress = 0
 
     
     def train(self, report: bool=False, reportPath: str="./report"):
+        global progress
         if report:
             if os.path.exists(reportPath):
                 shutil.rmtree(reportPath) 
@@ -32,7 +35,9 @@ class SOM:
 
         self._initNetwork()
         for i in range(1, self.epochs + 1):
-            print(f"\t Training in progress. Epoch {i}/{self.epochs}", end="\r")
+            self.progress = i/self.epochs*100
+            # print(f"Progress {progress} %")
+            # print(f"\t Training in progress. Epoch {i}/{self.epochs}", end="\r")
 
             point = self._randomSample()
             winnerIndex = self._selectWinner(point)
@@ -58,6 +63,10 @@ class SOM:
 
         return self.NN
     
+
+    def get_progress(self) -> float:
+        return self.progress
+
 
     def _normalize(self, array: np.ndarray) -> np.ndarray:
         self.norms = np.linalg.norm(array, axis=0)
