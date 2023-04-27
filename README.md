@@ -30,9 +30,24 @@ Nevertheless, the use of SOM for TSP can be a good choice for problems with a sm
 $ python -m venv venv
 $ ./venv/Scripts/activate.bat
 $ pip install -r requirements.txt
-$ python main.py
 ```
-## TSP
+## Basic local usage
+```
+$ python src/main.py
+```
+## Fast api usage
+```
+$ python src/api.py
+```
+## Docker
+```
+$ docker-compose up -d --build
+```
+# Software usage
+## Deploy
+Fast api deployed [Link](https://kohonen-tsp.herokuapp.com/)
+[![ci_cd](https://github.com/vieczorkamil/SOM-Kohonen-neural-network/actions/workflows/ci_cd.yaml/badge.svg)](https://github.com/vieczorkamil/SOM-Kohonen-neural-network/actions/workflows/ci_cd.yaml)
+# TSP
 Example results:
 - USA 600 cities
 <p align="center">
