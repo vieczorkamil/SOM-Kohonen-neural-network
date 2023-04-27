@@ -1,18 +1,17 @@
 from os import environ
-from typing import List 
-from fastapi import FastAPI, UploadFile, File, BackgroundTasks
-from fastapi import Response
+from typing import List
+from fastapi import FastAPI, UploadFile, File, BackgroundTasks, Form, Response
 from pydantic import BaseModel
 import uvicorn
 import numpy as np
-
 from SOM import SOM
 
 
-app = FastAPI(title="KOHONEN SOM - TSP") 
+app = FastAPI(title="KOHONEN SOM - TSP")
 coordinates_array = None
 network = None
 result = None
+report = None
 
 
 class Coordinates(BaseModel):
@@ -24,16 +23,12 @@ class CoordinateData(BaseModel):
     coordinates: List[Coordinates]
 
 
-class EpochNumber(BaseModel):
-    number: int
-
-
 def backgroud_task() -> None:
-    print("????????????????????????????????????????????????????? start background task")
+    print("Start background task")
     app.result = "In progress ... "
-    app.network.train(report=True)
+    app.network.train(report=app.report)
     app.result = "Done !!!"
-    print("????????????????????????????????????????????????????? end background task")
+    print("End background task")
 
 
 @app.on_event("startup")
@@ -41,14 +36,15 @@ async def startup_event():
     app.coordinates_array = None
     app.network = None
     app.result = "Not started yet"
+    app.report = True
 
 
-@app.get("/", tags=["Default"])
+@app.get("/", tags=["Default"], status_code=200)
 async def read_root():
     return {"Hello world": "TSP solution using Koheonen network"}
 
 
-@app.post("/setPoints")
+@app.post("/setPoints", status_code=200)
 async def set_points(data: CoordinateData):
     results = []
     coordinates_list = []
@@ -58,13 +54,10 @@ async def set_points(data: CoordinateData):
         results.append(result)
 
     app.coordinates_array = np.array(coordinates_list)
-    # print(type(app.coordinates_array))
-    # print(app.coordinates_array)
-    # print(app.coordinates_array[0])
     return {"results": results}
 
 
-@app.post("/uploadPoints")
+@app.post("/uploadPoints", status_code=200)
 async def upload_points(file: UploadFile = File(...)):
     results = []
     contents = file.file.read().decode("utf-8")
@@ -78,38 +71,57 @@ async def upload_points(file: UploadFile = File(...)):
         results.append(result)
 
     app.coordinates_array = np.transpose(np.array([x_coordinates, y_coordinates]))
-
-    # print(type(app.coordinates_array))
-    # print(app.coordinates_array)
-    # print(app.coordinates_array[0])
-
     return {"results": results}
 
 
-@app.post("/findSolution")
-async def find_solution(background_tasks: BackgroundTasks, number: EpochNumber):
-    app.network = SOM(app.coordinates_array, len(app.coordinates_array) * 8, 0.9997, int(number.number))
+@app.post("/findSolution", status_code=200)
+async def find_solution(background_tasks: BackgroundTasks, number_of_epoch: int = Form(), full_report: List[bool] = Form(...)):
+    app.network = SOM(app.coordinates_array, len(app.coordinates_array) * 8, 0.9997, int(number_of_epoch))
     app.result = "Started ..."
+    app.report = full_report[0]
     background_tasks.add_task(backgroud_task)
 
     return {"Process": app.result}
 
 
-@app.get("/getResult")
+@app.get("/getResult", status_code=200)
 async def get_result():
     print(app.network.get_progress())
-    if app.network.get_progress() == 100.0:
-        return {f"Process: {app.result}"}
-    else:
-        return {f"Process: {app.result} {app.network.get_progress()}%"}
+    if app.result != "Done !!!":
+        return {f"Process: {app.network.get_progress()}%"}
+    return {f"Process: {app.result}"}
+
+
+@app.get("/getStartPoints", status_code=200)
+def get_start_points():
+    if app.result == "Done !!!":
+        with open('report/solution/start points.png', 'rb') as f:
+            response_img = f.read()
+        headers = {'Content-Disposition': 'inline; filename="start points.gif"'}
+        return Response(response_img, headers=headers, media_type='image/png')
+    return {"Error": "The search for a solution has not started"}
+
+
+@app.get("/getFinalPoints", status_code=200)
+def get_final_points():
+    if app.result == "Done !!!":
+        with open('report/solution/final epoch.png', 'rb') as f:
+            response_img = f.read()
+        headers = {'Content-Disposition': 'inline; filename="final epoch.gif"'}
+        return Response(response_img, headers=headers, media_type='image/png')
+    return {"Error": "The search for a solution has not started"}
 
 
 @app.get('/getSolution', status_code=200)
 async def get_solution():
-     with open('report/solution.gif', 'rb') as f:
-         response_img = f.read()
-     headers = {'Content-Disposition': 'inline; filename="solution.gif"'}
-     return Response(response_img, headers=headers, media_type='image/gif')
+    if app.result == "Done !!!":
+        if app.report is True:
+            with open('report/solution.gif', 'rb') as f:
+                response_img = f.read()
+            headers = {'Content-Disposition': 'inline; filename="solution.gif"'}
+            return Response(response_img, headers=headers, media_type='image/gif')
+        return {"Error": "A faster no full report was selected"}
+    return {"Error": "The search for a solution has not started"}
 
 
 if __name__ == '__main__':
