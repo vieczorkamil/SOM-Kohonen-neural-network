@@ -1,4 +1,5 @@
 import shutil
+import math
 import glob
 import os
 import re
@@ -50,8 +51,14 @@ class SOM:
             if self.learningRate < 0.001:
                 break
 
+            # Keep only 15 photos to save gif to optimize memory
+            if int(self.epochs / 1000) > 15:
+                temp = math.floor(self.epochs / 15)
+            else:
+                temp = 1000
+
             if report:
-                if i % 1000 == 0:
+                if i % temp == 0:
                     name = f"{reportPath}/epoch {i}.png"
                     self._plotResultMap(name, title=f" - after {i} epochs")
 

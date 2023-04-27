@@ -120,7 +120,7 @@ async def get_solution():
                 response_img = f.read()
             headers = {'Content-Disposition': 'inline; filename="solution.gif"'}
             return Response(response_img, headers=headers, media_type='image/gif')
-        return {"Error": "A faster no full report was selected"}
+        return {"Error": "A faster (not full) report was selected"}
     return {"Error": "The search for a solution has not started"}
 
 
