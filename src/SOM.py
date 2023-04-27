@@ -36,9 +36,8 @@ class SOM:
         self._plotResultMap(name, plotNeurons=False)
 
         self._initNetwork()
+        j = 0
         for i in range(1, self.epochs + 1):
-            self.progress = i / self.epochs * 100
-
             point = self._randomSample()
             winnerIndex = self._selectWinner(point)
             gaussian = self._getNeighborhood(winnerIndex, self.n // 8)
@@ -59,16 +58,27 @@ class SOM:
 
             if report:
                 if i % temp == 0:
-                    name = f"{reportPath}/epoch {i}.png"
-                    self._plotResultMap(name, title=f" - after {i} epochs")
+                    j += 1
+                    if j == 15:
+                        name = f"{reportPath}/epoch {self.epochs}.png"
+                        self._plotResultMap(name, title=f" - after {self.epochs} epochs")
+                    else:
+                        name = f"{reportPath}/epoch {temp * j}.png"
+                        self._plotResultMap(name, title=f" - after {temp * j} epochs")
 
             if i == self.epochs:
                 name = f"{reportPath}/solution/final epoch.png"
                 self._plotResultMap(name, title=f" - final epoch {i}")
 
+            self.progress = (i / self.epochs) * 100
+            if self.progress == 100.0:
+                self.progress = 99.99  # Just to indicate that not everything is done - still wait for gif creation
+
         if report:
             self._makeGif(saveName=f"{reportPath}/solution.gif")
             self._printReport()
+
+        self.progress = 100.0  # Now everything is done
 
         return self.NN
 

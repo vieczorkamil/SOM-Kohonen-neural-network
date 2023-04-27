@@ -15,12 +15,6 @@ def loadData(path: str) -> np.ndarray:
 
 def main():
     cities = loadData(DATA_PATH)
-
-    # print(type(cities))
-    # print(cities)
-    # print(cities[0])
-    # exit()
-
     network = SOM(cities, len(cities) * 8, 0.9997, 30000)
     network.train(report=True)
 

@@ -21,7 +21,11 @@ jobs:
       working-directory: src
       run: |
         flake8 --ignore=E501,E231 *.py
-        pylint --disable=C0301 --disable=C0114 --disable=C0116 --disable=W0612 --disable=R0912 --disable=R0914 --disable=W0603 --disable=C0103 --disable=R0915 --disable=R0913 --disable=W0621 --disable=E1101 --disable=E0611 --disable=C0115 --disable=R0903 --disable=R1731 --disable=R0902 --disable=R1721 *.py
+        pylint --disable=C0301 --disable=C0114 --disable=C0116 --disable=W0612 \
+        --disable=R0912 --disable=R0914 --disable=W0603 --disable=C0103 \
+        --disable=R0915 --disable=R0913 --disable=W0621 --disable=E1101 \
+        --disable=E0611 --disable=C0115 --disable=R0903 --disable=R1731 \
+        --disable=R0902 --disable=R1721 *.py
 
   build:
     needs: test
