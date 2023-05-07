@@ -40,7 +40,7 @@ async def startup_event():
 
 
 @app.get("/", tags=["Default"], status_code=200)
-async def read_root():
+async def hello_world():
     return {"Hello world": "TSP solution using Koheonen network"}
 
 

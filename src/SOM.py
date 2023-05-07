@@ -23,8 +23,10 @@ class SOM:
         self.epochs = epochs
         self.progress = 0
         self.NN_norm = None
+        self.proces_done = False
 
     def train(self, report: bool = False, reportPath: str = "./report"):
+        self.proces_done = False
         if os.path.exists(reportPath):
             shutil.rmtree(reportPath)
         os.makedirs(reportPath)
@@ -79,11 +81,15 @@ class SOM:
             self._printReport()
 
         self.progress = 100.0  # Now everything is done
+        self.proces_done = True
 
         return self.NN
 
     def get_progress(self) -> float:
-        return round(self.progress, 2)
+        progress = round(self.progress, 2)
+        if progress == 100.0 and not self.proces_done:
+            progress = 99.99
+        return progress
 
     def _normalize(self, array: np.ndarray) -> np.ndarray:
         self.norms = np.linalg.norm(array, axis=0)
